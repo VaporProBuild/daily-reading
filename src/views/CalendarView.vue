@@ -60,7 +60,11 @@ const cells = computed(() => {
   ]
 })
 
+// Which way the month grid slides when it changes
+const direction = ref<'next' | 'prev'>('next')
+
 function shiftMonth(delta: number) {
+  direction.value = delta > 0 ? 'next' : 'prev'
   month.value = new Date(month.value.getFullYear(), month.value.getMonth() + delta, 1)
 }
 </script>
@@ -94,31 +98,33 @@ function shiftMonth(delta: number) {
       <button type="button" class="arrow" aria-label="Next month" @click="shiftMonth(1)">›</button>
     </header>
 
-    <div class="grid" role="grid">
-      <div v-for="name in weekdays" :key="name" class="weekday" role="columnheader">
-        {{ name }}
+    <Transition :name="`month-${direction}`" mode="out-in">
+      <div :key="monthLabel" class="grid" role="grid">
+        <div v-for="name in weekdays" :key="name" class="weekday" role="columnheader">
+          {{ name }}
+        </div>
+        <template v-for="(cell, i) in cells" :key="cell?.key ?? `blank-${i}`">
+          <div v-if="!cell" class="cell blank" />
+          <RouterLink
+            v-else
+            :to="dayRoute(cell.key)"
+            class="cell"
+            :class="{ today: cell.isToday, complete: cell.isComplete }"
+            :aria-label="`${cell.reading.book.name} ${cell.reading.chapter}${cell.isComplete ? ', completed' : ''}${cell.libraryGoal ? ', library goal reached' : ''}${cell.twisterDone ? ', tongue twister done' : ''}`"
+          >
+            <span class="num">{{ cell.day }}</span>
+            <span class="ref">{{ cell.reading.book.abbr }} {{ cell.reading.chapter }}</span>
+            <span class="marks" aria-hidden="true">
+              <svg v-if="cell.isComplete" class="check" viewBox="0 0 24 24">
+                <path d="M6 12.5l4 4 8-9" />
+              </svg>
+              <LibraryMark v-if="cell.libraryGoal" />
+              <TwisterMark v-if="cell.twisterDone" />
+            </span>
+          </RouterLink>
+        </template>
       </div>
-      <template v-for="(cell, i) in cells" :key="cell?.key ?? `blank-${i}`">
-        <div v-if="!cell" class="cell blank" />
-        <RouterLink
-          v-else
-          :to="dayRoute(cell.key)"
-          class="cell"
-          :class="{ today: cell.isToday, complete: cell.isComplete }"
-          :aria-label="`${cell.reading.book.name} ${cell.reading.chapter}${cell.isComplete ? ', completed' : ''}${cell.libraryGoal ? ', library goal reached' : ''}${cell.twisterDone ? ', tongue twister done' : ''}`"
-        >
-          <span class="num">{{ cell.day }}</span>
-          <span class="ref">{{ cell.reading.book.abbr }} {{ cell.reading.chapter }}</span>
-          <span class="marks" aria-hidden="true">
-            <svg v-if="cell.isComplete" class="check" viewBox="0 0 24 24">
-              <path d="M6 12.5l4 4 8-9" />
-            </svg>
-            <LibraryMark v-if="cell.libraryGoal" />
-            <TwisterMark v-if="cell.twisterDone" />
-          </span>
-        </RouterLink>
-      </template>
-    </div>
+    </Transition>
 
     <ul class="key" aria-label="Calendar key">
       <li>
@@ -384,5 +390,27 @@ a.complete:hover {
 
 .key-mark {
   fill: var(--c-accent);
+}
+
+/* Month grid slides the way you're moving through the calendar */
+.month-next-enter-active,
+.month-next-leave-active,
+.month-prev-enter-active,
+.month-prev-leave-active {
+  transition:
+    opacity 0.18s ease,
+    transform 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.month-next-enter-from,
+.month-prev-leave-to {
+  opacity: 0;
+  transform: translateX(1.5rem);
+}
+
+.month-next-leave-to,
+.month-prev-enter-from {
+  opacity: 0;
+  transform: translateX(-1.5rem);
 }
 </style>

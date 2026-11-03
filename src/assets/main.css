@@ -43,6 +43,28 @@ a {
   color: var(--c-link);
 }
 
+/* Taps act immediately; stops iOS Safari zooming when a control is tapped twice quickly.
+   Pinch-to-zoom still works. */
+a,
+button,
+input,
+label,
+summary {
+  touch-action: manipulation;
+}
+
+/* Honour the system "reduce motion" setting everywhere */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

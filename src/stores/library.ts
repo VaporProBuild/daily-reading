@@ -20,6 +20,8 @@ interface DayLog {
   words: number
   /** ISO timestamp of when the daily goal was reached */
   goalMetAt?: string
+  /** Words read that day per book, so resetting or moving back in a book can take them off */
+  books?: Record<string, number>
 }
 
 interface LibraryState {
@@ -116,8 +118,47 @@ export const useLibraryStore = defineStore('library', () => {
    * Forgets the place and read paragraphs for one book. Days already logged keep their words,
    * so past goals stay on the calendar.
    */
+  /**
+   * Takes words read in a book back off the daily totals, most recent days first, and drops a
+   * day's goal mark if it no longer reaches the goal. Words logged before per-book tracking
+   * existed can't be attributed to a book, so they stay.
+   */
+  function takeBackWords(bookId: string, amount: number) {
+    const dates = Object.keys(days.value).sort().reverse()
+    for (const date of dates) {
+      if (amount <= 0) break
+      const day = days.value[date]!
+      const fromBook = day.books?.[bookId] ?? 0
+      if (!fromBook) continue
+      const take = Math.min(fromBook, amount)
+      day.words = Math.max(0, day.words - take)
+      day.books![bookId] = fromBook - take
+      if (!day.books![bookId]) delete day.books![bookId]
+      amount -= take
+      if (day.goalMetAt && day.words < settings.readingGoal) delete day.goalMetAt
+    }
+  }
+
+  /** Removes everything a book contributed: place, read paragraphs, daily words and "finished". */
   function resetProgress(bookId: string) {
+    takeBackWords(bookId, Infinity)
     delete books.value[bookId]
+    delete finished.value[bookId]
+  }
+
+  /**
+   * Moves the reader's place in a book and replaces which paragraphs count as read. Words that
+   * become unread come off recent daily totals; newly read ones don't add to them, since
+   * skipping ahead isn't reading.
+   */
+  function setPlace(bookId: string, position: number, read: Ranges, wordsRead: number) {
+    const book = ensure(bookId)
+    const removed = book.wordsRead - wordsRead
+    book.read = read
+    book.wordsRead = wordsRead
+    book.position = position
+    book.lastReadAt = new Date().toISOString()
+    if (removed > 0) takeBackWords(bookId, removed)
   }
 
   /**
@@ -133,6 +174,7 @@ export const useLibraryStore = defineStore('library', () => {
     const today = todayKey()
     const day = (days.value[today] ??= { words: 0 })
     day.words += words
+    day.books = { ...day.books, [bookId]: (day.books?.[bookId] ?? 0) + words }
     if (!day.goalMetAt && day.words >= settings.readingGoal) {
       day.goalMetAt = new Date().toISOString()
       return true
@@ -154,6 +196,7 @@ export const useLibraryStore = defineStore('library', () => {
     savePosition,
     markRead,
     resetProgress,
+    setPlace,
     markFinished,
   }
 })

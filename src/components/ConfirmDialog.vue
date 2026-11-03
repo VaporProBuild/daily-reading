@@ -56,6 +56,30 @@ function confirm() {
   background: var(--c-overlay);
 }
 
+/* Fades and grows in; the parent wraps this in <Transition name="dialog"> so it animates out too */
+.confirm.dialog-enter-active,
+.confirm.dialog-leave-active {
+  transition:
+    opacity 0.2s ease,
+    transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.confirm.dialog-enter-active::backdrop,
+.confirm.dialog-leave-active::backdrop {
+  transition: opacity 0.2s ease;
+}
+
+.confirm.dialog-enter-from,
+.confirm.dialog-leave-to {
+  opacity: 0;
+  transform: scale(0.94) translateY(0.5rem);
+}
+
+.confirm.dialog-enter-from::backdrop,
+.confirm.dialog-leave-to::backdrop {
+  opacity: 0;
+}
+
 .panel {
   display: flex;
   flex-direction: column;

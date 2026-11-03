@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import { computed } from 'vue'
+import { RouterLink, RouterView, useRoute } from 'vue-router'
+import { useHideOnScroll } from '@/composables/useHideOnScroll'
 import { useSettingsStore } from '@/stores/settings'
 
 const REPO_URL = 'https://github.com/VaporProBuild/daily-reading'
@@ -7,10 +9,21 @@ const commit = __COMMIT_SHA__
 
 // Create the settings store on every page so the saved theme is applied at startup
 useSettingsStore()
+
+const route = useRoute()
+// The book reader has its own bar that does this, so the site header simply scrolls away there
+const inReader = computed(() => route.name === 'book')
+const { hidden } = useHideOnScroll()
+
+// Today's chapter and other days share one page instance, so moving between days doesn't fade
+function pageKey(name: unknown, fullPath: string) {
+  if (name === 'today' || name === 'day') return 'reading'
+  return name === 'book' ? fullPath : String(name)
+}
 </script>
 
 <template>
-  <header class="site-header">
+  <header class="site-header" :class="{ sticky: !inReader, tucked: !inReader && hidden }">
     <RouterLink to="/" class="brand">Daily Reading</RouterLink>
     <nav>
       <RouterLink :to="{ name: 'today' }" class="nav-icon" title="Today's reading">
@@ -49,7 +62,11 @@ useSettingsStore()
   </header>
 
   <main>
-    <RouterView />
+    <RouterView v-slot="{ Component, route: current }">
+      <Transition name="page" mode="out-in">
+        <component :is="Component" :key="pageKey(current.name, current.fullPath)" />
+      </Transition>
+    </RouterView>
   </main>
 
   <footer class="site-footer">
@@ -87,6 +104,24 @@ useSettingsStore()
   /* Extend the header band to the full window width while content stays centred */
   box-shadow: 0 0 0 100vmax var(--c-header-bg);
   clip-path: inset(0 -100vmax);
+  transition: transform 0.3s ease;
+}
+
+/* Stays at the top, slides away while scrolling down and back on the first scroll up */
+.site-header.sticky {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.site-header.tucked {
+  transform: translateY(-100%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header {
+    transition: none;
+  }
 }
 
 .brand {
@@ -109,6 +144,20 @@ nav {
   height: 2.5rem;
   border-radius: 50%;
   color: var(--c-header-muted);
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+/* Quick cross-fade between pages */
+.page-enter-active,
+.page-leave-active {
+  transition: opacity 0.16s ease;
+}
+
+.page-enter-from,
+.page-leave-to {
+  opacity: 0;
 }
 
 .nav-icon:hover {

@@ -52,8 +52,9 @@ const themes: { value: Theme; label: string }[] = [
     <fieldset class="group">
       <legend>Auto-scroll speed</legend>
       <p class="hint">
-        Tap the arrow button in the corner while reading to scroll hands-free. Touching or scrolling
-        the page pauses it. You can also change the speed while it's scrolling.
+        Tap the arrow button in the corner while reading to scroll hands-free. A speed slider shows
+        for a few seconds after you start, then tucks away so only the text is on screen. Touching
+        or scrolling the page pauses it.
       </p>
       <div class="speed">
         <input
@@ -65,6 +66,24 @@ const themes: { value: Theme; label: string }[] = [
           aria-label="Auto-scroll speed in words per minute"
         />
         <output>{{ settings.autoScrollWpm }} words per minute</output>
+      </div>
+    </fieldset>
+
+    <fieldset class="group">
+      <legend>Changing chapters</legend>
+      <p class="hint">
+        Books show one chapter at a time. Swipe left for the next chapter and right for the previous
+        one. You can also show arrow buttons, or hide them and just swipe.
+      </p>
+      <div class="segmented" role="radiogroup" aria-label="Changing chapters">
+        <label :class="{ active: settings.chapterArrows }">
+          <input v-model="settings.chapterArrows" type="radio" name="arrows" :value="true" />
+          Arrows and swipe
+        </label>
+        <label :class="{ active: !settings.chapterArrows }">
+          <input v-model="settings.chapterArrows" type="radio" name="arrows" :value="false" />
+          Swipe only
+        </label>
       </div>
     </fieldset>
 
@@ -157,6 +176,9 @@ input[type='radio'] {
   font-weight: 600;
   color: var(--c-text-muted);
   cursor: pointer;
+  transition:
+    background-color 0.25s ease,
+    color 0.25s ease;
 }
 
 .segmented .sub {

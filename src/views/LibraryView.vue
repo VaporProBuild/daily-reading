@@ -476,6 +476,13 @@ h1 {
   cursor: pointer;
 }
 
+.filters button {
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
 .filters button:hover {
   color: var(--c-text);
 }
