@@ -64,6 +64,8 @@
 
   --c-danger: var(--c-red-300);
   --c-overlay: rgb(14 11 7 / 0.9);
+  /* Floating controls such as auto-scroll */
+  --c-shadow: rgb(0 0 0 / 0.5);
 
   color-scheme: dark;
 }
@@ -93,6 +95,8 @@
 
   --c-danger: var(--c-red-600);
   --c-overlay: rgb(250 246 238 / 0.9);
+  /* Floating controls such as auto-scroll */
+  --c-shadow: rgb(74 58 35 / 0.22);
 
   color-scheme: light;
 }
@@ -123,6 +127,8 @@
 
   --c-danger: var(--c-off-white);
   --c-overlay: rgb(18 18 18 / 0.9);
+  /* Floating controls such as auto-scroll */
+  --c-shadow: rgb(0 0 0 / 0.6);
 
   color-scheme: dark;
 }
@@ -153,6 +159,8 @@
 
   --c-danger: var(--c-off-black);
   --c-overlay: rgb(242 242 242 / 0.9);
+  /* Floating controls such as auto-scroll */
+  --c-shadow: rgb(18 18 18 / 0.18);
 
   color-scheme: light;
 }

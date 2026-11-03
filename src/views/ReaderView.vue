@@ -3,6 +3,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import CompletionCheck from '@/components/CompletionCheck.vue'
 import ConfirmDialog from '@/components/ConfirmDialog.vue'
+import AutoScroll from '@/components/AutoScroll.vue'
 import GoalProgress from '@/components/GoalProgress.vue'
 import {
   blockWords,
@@ -283,6 +284,7 @@ onBeforeUnmount(() => {
       </footer>
     </div>
 
+    <AutoScroll v-if="text" :content="content" :words="text.words" />
     <CompletionCheck
       v-if="celebrating"
       message="Daily reading goal reached!"

@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import CompletionCheck from '@/components/CompletionCheck.vue'
+import AutoScroll from '@/components/AutoScroll.vue'
 import WeekStrip from '@/components/WeekStrip.vue'
 import { useChapter } from '@/composables/useChapter'
 import { TEXTS } from '@/data/versions'
@@ -22,6 +23,10 @@ const reading = computed(() => readingForDate(date.value))
 const version = computed(() => settings.bibleVersion)
 const text = computed(() => version.value.text)
 const { verses, loading, error } = useChapter(reading, text)
+const textEl = ref<HTMLElement | null>(null)
+const chapterWords = computed(() =>
+  verses.value.reduce((sum, [, t]) => sum + t.split(/\s+/).filter(Boolean).length, 0),
+)
 
 const isToday = computed(() => date.value === today)
 const isComplete = computed(() => progress.isComplete(date.value))
@@ -85,7 +90,7 @@ function celebrationDone() {
 
     <p v-if="loading" class="status">Loading…</p>
     <p v-else-if="error" class="status error">{{ error }}</p>
-    <div v-else class="text">
+    <div v-else ref="textEl" class="text">
       <p>
         <span v-for="[n, text] in verses" :key="n" class="verse"
           ><sup>{{ n }}</sup
@@ -116,6 +121,7 @@ function celebrationDone() {
       </button>
     </footer>
 
+    <AutoScroll v-if="verses.length" :content="textEl" :words="chapterWords" />
     <CompletionCheck v-if="celebrating" @done="celebrationDone" />
   </article>
 </template>

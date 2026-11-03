@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { READING_GOALS } from '@/data/library'
 import { TEXTS, VERSIONS } from '@/data/versions'
 import { readingForDate, todayKey } from '@/lib/readingPlan'
-import { useSettingsStore, type Theme } from '@/stores/settings'
+import { AUTO_SCROLL, useSettingsStore, type Theme } from '@/stores/settings'
 
 const settings = useSettingsStore()
 const today = computed(() => readingForDate(todayKey()))
@@ -46,6 +46,25 @@ const themes: { value: Theme; label: string }[] = [
           {{ g.pages }} pages
           <span class="sub">{{ g.words.toLocaleString() }} words</span>
         </label>
+      </div>
+    </fieldset>
+
+    <fieldset class="group">
+      <legend>Auto-scroll speed</legend>
+      <p class="hint">
+        Tap the arrow button in the corner while reading to scroll hands-free. Touching or scrolling
+        the page pauses it. You can also change the speed while it's scrolling.
+      </p>
+      <div class="speed">
+        <input
+          v-model.number="settings.autoScrollWpm"
+          type="range"
+          :min="AUTO_SCROLL.min"
+          :max="AUTO_SCROLL.max"
+          :step="AUTO_SCROLL.step"
+          aria-label="Auto-scroll speed in words per minute"
+        />
+        <output>{{ settings.autoScrollWpm }} words per minute</output>
       </div>
     </fieldset>
 
@@ -236,5 +255,23 @@ input[type='radio'] {
   .themes {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+}
+
+.speed {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  max-width: 32rem;
+}
+
+.speed input {
+  flex: 1 1 12rem;
+  accent-color: var(--c-accent);
+}
+
+.speed output {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
 }
 </style>
