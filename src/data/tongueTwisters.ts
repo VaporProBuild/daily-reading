@@ -2,7 +2,7 @@ import { PLAN_START, daysBetween } from '@/lib/readingPlan'
 
 /**
  * Short tongue twisters: traditional ones (folklore, free to use) plus originals written for
- * this site. One is shown per day, the same for everyone.
+ * this site. Each day gets a different one, picked at random.
  */
 export const TONGUE_TWISTERS: string[] = [
   'She sells seashells by the seashore.',
@@ -305,14 +305,150 @@ export const TONGUE_TWISTERS: string[] = [
   'Snappy snapping snapdragons.',
   'Spry spiders spy.',
   'Swirly swans swoop.',
+  'Brisk brown bunnies bounce by the bridge.',
+  'Clever Clive clips crisp clover.',
+  'Dotty Dan dunked dozens of doughnuts.',
+  'Eight eager elk eat early.',
+  'Fran found five funny feathers.',
+  "Greta's green garden grows grapes.",
+  'Hilda hums happy hymns at home.',
+  'Ivy ironed itchy indigo inserts.',
+  'Jack juggled jars of jam and jelly.',
+  'Kim keeps kettles clean in the kitchen.',
+  'Lazy lions lounge on long logs.',
+  'Molly mixes mint and melon muffins.',
+  'Ned needs nine new notebooks.',
+  'Olive ordered odd orange onions.',
+  'Peggy packed purple peppers in paper.',
+  'Queenie quietly quilts a quick quilt.',
+  'Ronnie rolls round red rocks.',
+  'Sixty silly seagulls sing on Saturday.',
+  'Tina tied tiny tulips to the tree.',
+  "Uncle Ulric's umbrella unrolled upside down.",
+  "Vinnie's van vanished in the valley.",
+  'Wally washed woolly white wool.',
+  'Yolanda yells at yellow yaks.',
+  'Zack zips zany zebra zippers.',
+  'Black bears bake blackberry bread.',
+  'Brave Brenda broke the brown bridge.',
+  'Cheerful chefs chop cheap cherries.',
+  'Clara clasps clean clear glass.',
+  'Crafty crows crack crunchy crackers.',
+  'Dreamy dragons drink drizzled drops.',
+  'Flat fish flip fast in fresh water.',
+  'Frosty frogs freeze in frozen fields.',
+  'Glowing glitter glues to glossy gloves.',
+  'Grumpy grandpa grinds green grain.',
+  "Polly's poodle prefers plain pasta.",
+  'Prickly porcupines prefer pine.',
+  'Scarlet scarves scatter in the school yard.',
+  'Shiny shoes shuffle through short shadows.',
+  'Slick slippers slide on slippery slopes.',
+  'Smiling Simon smelled smoked salmon.',
+  'Snappy snails sniff snowy snacks.',
+  'Speedy spiders spin special spirals.',
+  'Sturdy storks stand still in streams.',
+  'Swift swallows swoop and swirl.',
+  'Thirsty Theo thinks of thick thunder.',
+  'Thelma thanked the thoughtful thatcher.',
+  'Trudy tries to trap tricky trout.',
+  'Twelve twigs twist in the twilight.',
+  'Whistling whales whirl in white water.',
+  'Which wristwatch is a Swiss wristwatch?',
+  'Bobby blew big blue bubbles.',
+  'Cathy cooked crispy corn cakes.',
+  'Daisy dropped dozens of dirty dishes.',
+  'Freddy fried fresh fish fillets.',
+  'Gilbert grabbed gobs of gummy grapes.',
+  'Harriet hurried home with hot honey.',
+  'Lucy lost lots of little lemons.',
+  'Mabel made marvellous maple muffins.',
+  'Nora knitted nine neat napkins.',
+  'Percy picked pink peonies in the park.',
+  'Rosie rode a red rocking horse.',
+  'Sammy sang sweet songs on the swing.',
+  'Teddy tasted twenty tart tangerines.',
+  'Violet visited vast violet valleys.',
+  'Winnie wove warm woollen winter wraps.',
+  'Six shy sheep shiver in the shade.',
+  'Four furry foxes fetch fresh figs.',
+  'Two tall turtles trot toward town.',
+  'Seven shiny seashells sit on the sand.',
+  'Ten tired tigers took a taxi.',
+  'Nosy newts nap near noisy nests.',
+  'Eleven elegant eels eat eggs.',
+  'A tiny tot tossed a tin toy.',
+  'A chubby chick chewed cheap chips.',
+  'A sleepy sloth slipped on a slug.',
+  'A greedy goose gulped green grapes.',
+  'A clumsy clown clapped and clattered.',
+  'A brave bee buzzed by a big bloom.',
+  'A mighty moose munched mushy melons.',
+  'A proud parrot practised pronouncing pirate.',
+  'Friendly French friars fry fritters.',
+  'Crisp crackers crackle, crisp crusts crumble.',
+  'Great green geese gaze at grey gates.',
+  'Peach pie, plum pie, pear pie, please.',
+  'Sunny Sunday, sunny sunflowers.',
+  'Quick quacks quiet quirky quails.',
+  'Tick tock, tick tock, the tall clock talks.',
+  'Silver spoons and silly songs.',
+  'Bouncy blue balls bounce by Bill.',
+  'Red rabbits run round rocky ridges.',
+  'Wet wellies walk wobbly ways.',
+  "Barry's brother brews bitter barley.",
+  'Fifty fluffy flamingos flap.',
+  "Fred's friend Fran fries fresh fries.",
+  'Plaid plates, plain plates, polished plates.',
+  'Speak slowly, speak simply, speak sweetly.',
+  'Practise patience, practise peace, practise praise.',
+  'Grace gives good gifts gladly.',
+  'Faithful friends find fresh fruit.',
+  'Gentle Jenny jingles jolly bells.',
 ]
 
-// Step through the list 7 at a time so consecutive days don't land on similar sounds.
-// 7 shares no factor with 300, so every twister appears once before any repeats.
-const STEP = 7
+/** Small seeded random number generator (mulberry32): the same seed gives the same sequence */
+function seededRandom(seed: number) {
+  let a = seed >>> 0
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0
+    let t = a
+    t = Math.imul(t ^ (t >>> 15), t | 1)
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+  }
+}
 
+const orders = new Map<number, number[]>()
+
+/** A random order of every twister, fixed for each run through the whole list */
+function orderForCycle(cycle: number): number[] {
+  let order = orders.get(cycle)
+  if (!order) {
+    const random = seededRandom(cycle * 2654435761 + 12345)
+    order = TONGUE_TWISTERS.map((_, i) => i)
+    for (let i = order.length - 1; i > 0; i--) {
+      const j = Math.floor(random() * (i + 1))
+      ;[order[i], order[j]] = [order[j]!, order[i]!]
+    }
+    // Don't start a new run with the twister that ended the last one
+    const previous = orders.get(cycle - 1) ?? (cycle > 0 ? orderForCycle(cycle - 1) : null)
+    if (previous && order[0] === previous[previous.length - 1]) {
+      ;[order[0], order[1]] = [order[1]!, order[0]!]
+    }
+    orders.set(cycle, order)
+  }
+  return order
+}
+
+/**
+ * Each day gets a different twister picked at random. It stays the same all day (and for
+ * everyone), and none repeats until every twister has had its day; then the order reshuffles.
+ */
 export function twisterForDate(date: string): string {
   const n = TONGUE_TWISTERS.length
   const offset = daysBetween(PLAN_START, date)
-  return TONGUE_TWISTERS[(((offset * STEP) % n) + n) % n]!
+  const cycle = Math.floor(offset / n)
+  const position = offset - cycle * n
+  return TONGUE_TWISTERS[orderForCycle(cycle)[position]!]!
 }
