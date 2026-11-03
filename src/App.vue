@@ -6,6 +6,7 @@ import { useSettingsStore } from '@/stores/settings'
 
 const REPO_URL = 'https://github.com/VaporProBuild/daily-reading'
 const commit = __COMMIT_SHA__
+const version = __APP_VERSION__
 
 // Create the settings store on every page so the saved theme is applied at startup
 useSettingsStore()
@@ -70,24 +71,33 @@ function pageKey(name: unknown, fullPath: string) {
   </main>
 
   <footer class="site-footer">
-    <a
-      v-if="commit !== 'dev'"
-      :href="`${REPO_URL}/commit/${commit}`"
-      target="_blank"
-      rel="noopener"
-      class="commit"
-      title="The commit this version of the site was built from"
-      >{{ commit.slice(0, 7) }}</a
+    <p class="build">
+      <span class="version">v{{ version }}</span>
+      <span aria-hidden="true"> · </span>
+      <a
+        v-if="commit !== 'dev'"
+        :href="`${REPO_URL}/commit/${commit}`"
+        target="_blank"
+        rel="noopener"
+        class="commit"
+        :aria-label="`Commit ${commit.slice(0, 7)}`"
+        title="The commit this version of the site was built from"
+        >{{ commit.slice(0, 7) }}</a
+      >
+      <span v-else class="commit">local build</span>
+    </p>
+    <RouterLink
+      :to="{ name: 'settings' }"
+      class="settings-link"
+      aria-label="Settings"
+      title="Settings"
     >
-    <span v-else class="commit">Local build</span>
-    <RouterLink :to="{ name: 'settings' }" class="settings-link">
       <svg viewBox="0 0 24 24" aria-hidden="true">
         <circle cx="12" cy="12" r="3" />
         <path
           d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"
         />
       </svg>
-      Settings
     </RouterLink>
   </footer>
 </template>
@@ -194,8 +204,16 @@ main {
   font-size: 0.85rem;
 }
 
-.commit {
+.build {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  color: var(--c-text-muted);
+}
+
+.version {
+  color: var(--c-text);
+}
+
+.commit {
   color: var(--c-text-muted);
   text-decoration: none;
 }
@@ -205,11 +223,18 @@ a.commit:hover {
 }
 
 .settings-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.4rem;
-  font-weight: 600;
-  text-decoration: none;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  margin-right: -0.5rem;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.settings-link:hover,
+.settings-link.router-link-exact-active {
+  background: var(--c-surface-hover);
 }
 
 .settings-link svg {

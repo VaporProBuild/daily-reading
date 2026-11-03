@@ -1,4 +1,5 @@
 import { execSync } from 'node:child_process'
+import { readFileSync } from 'node:fs'
 import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig } from 'vite'
@@ -15,12 +16,18 @@ function commitSha(): string {
   }
 }
 
+// The app version shown in the footer comes from package.json
+const appVersion: string = JSON.parse(
+  readFileSync(new URL('./package.json', import.meta.url), 'utf8'),
+).version
+
 // https://vite.dev/config/
 export default defineConfig({
   // GitHub Pages serves the site from https://<user>.github.io/daily-reading/
   base: '/daily-reading/',
   define: {
     __COMMIT_SHA__: JSON.stringify(commitSha()),
+    __APP_VERSION__: JSON.stringify(appVersion),
   },
   plugins: [
     vue(),
