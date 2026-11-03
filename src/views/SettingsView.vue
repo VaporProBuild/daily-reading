@@ -22,7 +22,7 @@ const themes: { value: Theme; label: string }[] = [
 
     <fieldset class="group">
       <legend>Appearance</legend>
-      <div class="segmented" role="radiogroup" aria-label="Theme">
+      <div class="segmented themes" role="radiogroup" aria-label="Theme">
         <label v-for="t in themes" :key="t.value" :class="{ active: settings.theme === t.value }">
           <input v-model="settings.theme" type="radio" name="theme" :value="t.value" />
           {{ t.label }}
@@ -52,10 +52,9 @@ const themes: { value: Theme; label: string }[] = [
     <fieldset class="group">
       <legend>Bible version</legend>
       <p class="hint">
-        The book button in the header opens each day's chapter in the version you pick. The
-        {{ TEXTS.kjv.name }} is public domain, so its text appears right on the page. The ESV, NIV,
-        CSB and NLT are copyrighted, so the page shows the {{ TEXTS.web.name }} for those and links
-        out to your version.
+        The {{ TEXTS.kjv.name }} is public domain, so its text appears right on the page. The ESV,
+        NIV, CSB and NLT are copyrighted, so the page shows the {{ TEXTS.web.name }} for those, with
+        a link under each chapter to read it in your version.
       </p>
 
       <ul class="versions">
@@ -89,7 +88,7 @@ const themes: { value: Theme; label: string }[] = [
 
 h1 {
   font-family: var(--font-serif);
-  font-size: 2rem;
+  font-size: clamp(1.6rem, 7vw, 2rem);
 }
 
 .group {
@@ -227,5 +226,15 @@ input[type='radio'] {
   gap: 0.25rem 1.25rem;
   padding: 0 1rem 0.8rem 2.85rem;
   font-size: 0.85rem;
+}
+
+.themes {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+@media (max-width: 480px) {
+  .themes {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 </style>

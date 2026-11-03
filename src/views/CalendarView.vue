@@ -107,13 +107,15 @@ function shiftMonth(delta: number) {
           :class="{ today: cell.isToday, complete: cell.isComplete }"
           :aria-label="`${cell.reading.book.name} ${cell.reading.chapter}${cell.isComplete ? ', completed' : ''}${cell.libraryGoal ? ', library goal reached' : ''}${cell.twisterDone ? ', tongue twister done' : ''}`"
         >
-          <TwisterMark v-if="cell.twisterDone" />
-          <LibraryMark v-if="cell.libraryGoal" />
           <span class="num">{{ cell.day }}</span>
-          <svg v-if="cell.isComplete" class="check" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M6 12.5l4 4 8-9" />
-          </svg>
-          <span v-else class="ref">{{ cell.reading.book.abbr }} {{ cell.reading.chapter }}</span>
+          <span class="ref">{{ cell.reading.book.abbr }} {{ cell.reading.chapter }}</span>
+          <span class="marks" aria-hidden="true">
+            <svg v-if="cell.isComplete" class="check" viewBox="0 0 24 24">
+              <path d="M6 12.5l4 4 8-9" />
+            </svg>
+            <LibraryMark v-if="cell.libraryGoal" />
+            <TwisterMark v-if="cell.twisterDone" />
+          </span>
         </RouterLink>
       </template>
     </div>
@@ -150,28 +152,30 @@ function shiftMonth(delta: number) {
 
 .stats {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.6rem;
 }
 
 .stat {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0.9rem;
+  padding: 0.7rem 0.5rem;
   border: 1px solid var(--c-border);
   border-radius: 12px;
   background: var(--c-surface);
+  text-align: center;
 }
 
 .stat strong {
-  font-size: 1.75rem;
+  font-size: 1.5rem;
   line-height: 1.1;
   color: var(--c-success);
 }
 
 .stat span {
-  font-size: 0.8rem;
+  font-size: 0.75rem;
+  line-height: 1.3;
   color: var(--c-text-muted);
 }
 
@@ -223,13 +227,14 @@ h1 {
 }
 
 .cell {
-  position: relative;
-  display: flex;
-  flex-direction: column;
+  /* Every cell is the same height: date at the top, chapter in the middle, marks at the bottom */
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  justify-items: center;
   align-items: center;
-  justify-content: space-between;
-  aspect-ratio: 1 / 1.1;
-  padding: 0.35rem 0.15rem;
+  height: 4.75rem;
+  min-width: 0;
+  padding: 0.35rem 0.15rem 0.3rem;
   border: 1px solid var(--c-border);
   border-radius: 10px;
   background: var(--c-surface);
@@ -275,30 +280,73 @@ a.complete:hover {
   background: var(--c-success-strong);
 }
 
+.marks {
+  display: flex;
+  gap: 0.15rem;
+  height: 0.9rem;
+  color: var(--c-accent);
+}
+
+.complete .marks {
+  color: var(--c-on-success);
+}
+
 .check {
-  width: 55%;
-  max-width: 1.75rem;
+  width: 0.9rem;
+  height: 0.9rem;
   fill: none;
-  stroke: var(--c-on-success);
-  stroke-width: 3;
+  stroke: currentColor;
+  stroke-width: 3.5;
   stroke-linecap: round;
   stroke-linejoin: round;
 }
 
-@media (max-width: 420px) {
-  .ref {
-    display: none;
-  }
-  .cell {
-    justify-content: center;
-    gap: 0.15rem;
-  }
+.complete .ref {
+  color: var(--c-on-success);
 }
 
-.complete :deep(.library-mark),
-.complete :deep(.twister-mark) {
-  fill: var(--c-on-success);
-  stroke: var(--c-success);
+@media (max-width: 480px) {
+  .stats {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stat {
+    flex-direction: row;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.5rem;
+  }
+
+  .stat strong {
+    font-size: 1.2rem;
+  }
+
+  .grid {
+    gap: 0.25rem;
+  }
+
+  /* No room for the chapter on a phone; the day page shows it */
+  .ref {
+    visibility: hidden;
+  }
+
+  .cell {
+    height: 3.4rem;
+    border-radius: 8px;
+  }
+
+  /* Up to three marks share a ~45px cell */
+  .marks {
+    gap: 0;
+    height: 0.7rem;
+  }
+
+  .check,
+  .marks :deep(.library-mark),
+  .marks :deep(.twister-mark) {
+    width: 0.7rem;
+    height: 0.7rem;
+  }
 }
 
 .key {

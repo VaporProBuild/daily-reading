@@ -172,4 +172,19 @@ a.commit:hover {
   stroke-linecap: round;
   stroke-linejoin: round;
 }
+
+@media (max-width: 380px) {
+  .brand {
+    font-size: 1.1rem;
+  }
+
+  nav {
+    gap: 0.1rem;
+  }
+
+  .nav-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+}
 </style>

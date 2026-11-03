@@ -12,8 +12,16 @@
   margin: 0;
 }
 
+html {
+  /* Stop iOS enlarging text when the phone is turned sideways */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   min-height: 100vh;
+  min-height: 100dvh;
+  -webkit-tap-highlight-color: transparent;
   background: var(--c-bg);
   color: var(--c-text);
   font-family: var(--font-sans);
@@ -25,6 +33,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  min-height: 100dvh;
   max-width: 44rem;
   margin: 0 auto;
   padding: 0 1rem;

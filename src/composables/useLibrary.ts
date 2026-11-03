@@ -63,8 +63,12 @@ export function useLibraryCatalog() {
   const ready = Promise.all([loadCanadaCatalog(), myBooks.ready])
   const books = computed(() => [...myBooks.books, ...BUNDLED_BOOKS, ...canadaBooks.value])
 
+  // Only wait on the source a book can come from, so a slow device store or Canadian host
+  // never holds up opening a bundled book
   async function findBook(id: string): Promise<LibraryBook | undefined> {
-    await ready
+    const bundled = BUNDLED_BOOKS.find((b) => b.id === id)
+    if (bundled) return bundled
+    await (id.startsWith('mine-') ? myBooks.ready : loadCanadaCatalog())
     return books.value.find((b) => b.id === id)
   }
 

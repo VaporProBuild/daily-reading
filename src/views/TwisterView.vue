@@ -68,7 +68,7 @@ const encouragement = computed(() => {
 h1 {
   margin: 0.25rem 0 0.5rem;
   font-family: var(--font-serif);
-  font-size: 2rem;
+  font-size: clamp(1.6rem, 7vw, 2rem);
 }
 
 .intro {

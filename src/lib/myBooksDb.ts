@@ -13,13 +13,21 @@ let dbPromise: Promise<IDBDatabase> | null = null
 
 function openDb(): Promise<IDBDatabase> {
   dbPromise ??= new Promise((resolve, reject) => {
+    // Some browsers (notably Safari in certain modes) can leave the open request hanging
+    const timer = setTimeout(() => reject(new Error('IndexedDB did not open')), 4000)
     const req = indexedDB.open(DB_NAME, 1)
     req.onupgradeneeded = () => {
       req.result.createObjectStore(META, { keyPath: 'id' })
       req.result.createObjectStore(TEXT)
     }
-    req.onsuccess = () => resolve(req.result)
-    req.onerror = () => reject(req.error)
+    req.onsuccess = () => {
+      clearTimeout(timer)
+      resolve(req.result)
+    }
+    req.onerror = () => {
+      clearTimeout(timer)
+      reject(req.error)
+    }
   })
   dbPromise.catch(() => (dbPromise = null))
   return dbPromise

@@ -111,4 +111,11 @@ const fmt = (n: number) => n.toLocaleString()
   width: 3.5rem;
   height: 0.35rem;
 }
+
+@media (max-width: 480px) {
+  /* Leave room for the book title in the reader bar */
+  .compact .bar {
+    display: none;
+  }
+}
 </style>

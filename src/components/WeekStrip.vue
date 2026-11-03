@@ -53,12 +53,14 @@ const nextWeek = computed(() => addDays(props.date, 7))
           :aria-current="d.isSelected ? 'date' : undefined"
           :aria-label="`${fromDateKey(d.key).toLocaleDateString()}: ${d.reading.book.name} ${d.reading.chapter}${d.isComplete ? ', completed' : ''}${d.libraryGoal ? ', library goal reached' : ''}${d.twisterDone ? ', tongue twister done' : ''}`"
         >
-          <TwisterMark v-if="d.twisterDone" />
-          <LibraryMark v-if="d.libraryGoal" />
           <span class="weekday">{{ d.weekday }}</span>
           <span class="num">{{ d.day }}</span>
-          <span class="mark" aria-hidden="true">
-            <svg v-if="d.isComplete" viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9" /></svg>
+          <span class="marks" aria-hidden="true">
+            <span v-if="d.isComplete" class="mark">
+              <svg viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9" /></svg>
+            </span>
+            <LibraryMark v-if="d.libraryGoal" />
+            <TwisterMark v-if="d.twisterDone" />
           </span>
         </RouterLink>
       </li>
@@ -132,14 +134,20 @@ a.day:hover {
   line-height: 1.2;
 }
 
+.marks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.1rem;
+  height: 1rem;
+  color: var(--c-accent);
+}
+
 .mark {
   display: grid;
   place-items: center;
-  width: 1.1rem;
-  height: 1.1rem;
-}
-
-.complete .mark {
+  width: 1rem;
+  height: 1rem;
   border-radius: 50%;
   background: var(--c-success);
 }
@@ -172,19 +180,46 @@ a.selected:hover {
   background: var(--c-accent-hover);
 }
 
-.selected.complete .mark {
+.selected .marks {
+  color: var(--c-on-accent);
+}
+
+.selected .mark {
   background: var(--c-on-accent);
 }
 
-.selected.complete .mark svg {
+.selected .mark svg {
   stroke: var(--c-accent);
 }
 
-.complete :deep(.library-mark),
-.selected :deep(.library-mark),
-.complete :deep(.twister-mark),
-.selected :deep(.twister-mark) {
-  fill: var(--c-on-accent);
-  stroke: var(--c-accent);
+@media (max-width: 480px) {
+  .week {
+    grid-template-columns: 1.5rem 1fr 1.5rem;
+    gap: 0.15rem;
+  }
+
+  .arrow {
+    width: 1.5rem;
+  }
+
+  .days {
+    gap: 0.2rem;
+  }
+
+  .day {
+    border-radius: 10px;
+  }
+
+  /* Three marks don't fit side by side in a phone-sized day, so shrink them */
+  .marks {
+    gap: 0;
+  }
+
+  .mark,
+  .marks :deep(.library-mark),
+  .marks :deep(.twister-mark) {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
 }
 </style>

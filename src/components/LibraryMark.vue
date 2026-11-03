@@ -8,14 +8,9 @@
 
 <style scoped>
 .library-mark {
-  position: absolute;
-  top: 0.2rem;
-  right: 0.2rem;
-  width: 0.85rem;
-  height: 0.85rem;
-  fill: var(--c-accent);
-  stroke: var(--c-bg);
-  stroke-width: 1.5;
-  stroke-linejoin: round;
+  flex: none;
+  width: 0.8rem;
+  height: 0.8rem;
+  fill: currentColor;
 }
 </style>

@@ -254,7 +254,7 @@ function lastRead(book: LibraryBook) {
 
 h1 {
   font-family: var(--font-serif);
-  font-size: 2rem;
+  font-size: clamp(1.6rem, 7vw, 2rem);
 }
 
 .stats {
@@ -443,6 +443,25 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
+}
+
+@media (max-width: 480px) {
+  /* One row of topics that scrolls sideways, edge to edge */
+  .filters {
+    flex-wrap: nowrap;
+    margin: 0 -1rem;
+    padding: 0 1rem;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .filters::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filters button {
+    flex: none;
+  }
 }
 
 .filters button {
