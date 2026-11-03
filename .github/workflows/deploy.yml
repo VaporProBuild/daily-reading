@@ -27,6 +27,9 @@ jobs:
 
       - run: npm ci
       - run: npm run build
+        env:
+          # Optional Canadian host for Canada-only public-domain books (see README)
+          VITE_CANADA_LIBRARY_URL: ${{ vars.CANADA_LIBRARY_URL }}
 
       # Serve index.html for unknown paths so Vue Router deep links work on refresh
       - run: cp dist/index.html dist/404.html

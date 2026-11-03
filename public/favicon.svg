@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Colours match the brand browns in src/assets/colors.css -->
+  <rect width="64" height="64" rx="14" fill="#a87f45"/>
+  <!-- Page block peeking out on the right and bottom -->
+  <path d="M20 9h28a3 3 0 0 1 3 3v40a3 3 0 0 1-3 3H20z" fill="#faf6ee"/>
+  <path d="M47 13v38M44 13v38" stroke="#d6b98a" stroke-width="1"/>
+  <!-- Cover -->
+  <path d="M15 12a4 4 0 0 1 4-4h24a3 3 0 0 1 3 3v38a3 3 0 0 1-3 3H19a4 4 0 0 1-4-4z" fill="#33281a"/>
+  <!-- Spine -->
+  <path d="M15 12a4 4 0 0 1 4-4h2v44h-2a4 4 0 0 1-4-4z" fill="#241b10"/>
+  <path d="M15 14.5h6M15 45.5h6" stroke="#c19a62" stroke-width="1.5"/>
+  <!-- Gold border on the cover -->
+  <rect x="24" y="11" width="19" height="38" rx="1.5" fill="none" stroke="#c19a62" stroke-width="0.8" opacity="0.7"/>
+  <!-- Cross -->
+  <path d="M30.5 15.5h6v8h6.5v6h-6.5V45h-6V29.5H24v-6h6.5z" fill="#e8c88f"/>
+  <!-- Ribbon bookmark -->
+  <path d="M38 52v9l2.5-2.2 2.5 2.2v-9z" fill="#e8d6b6"/>
+</svg>

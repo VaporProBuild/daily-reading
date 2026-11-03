@@ -1,0 +1,158 @@
+/*
+ * Colour palette. Every colour in the app comes from here; components only use var(--c-*).
+ * Swatches are built around the two brand browns (#4a3a23 and #a87f45).
+ * Role colours (bg, text, success, ...) map onto the swatches. Dark is the default theme;
+ * the settings page switches themes by setting <html data-theme="light|greyscale|whitescale">.
+ * Greyscale and whitescale use only off-black, off-white and greys.
+ */
+:root {
+  /* Browns */
+  --c-brown-990: #0e0b07; /* warm off-black */
+  --c-brown-975: #18120a;
+  --c-brown-950: #241b10;
+  --c-brown-900: #33281a;
+  --c-brown-850: #3f311e;
+  --c-brown-800: #4a3a23; /* dark brown */
+  --c-brown-700: #66502f;
+  --c-brown-600: #87673a;
+  --c-brown-500: #a87f45; /* light brown */
+  --c-brown-400: #c19a62;
+  --c-brown-300: #d6b98a;
+  --c-brown-200: #e8d6b6;
+  --c-brown-100: #f3eadb;
+  --c-brown-50: #faf6ee;
+  --c-paper: #fffdf9;
+
+  /* Off-black, off-white and greys (greyscale and whitescale themes) */
+  --c-off-black: #121212;
+  --c-grey-950: #1b1b1b;
+  --c-grey-900: #252525;
+  --c-grey-850: #323232;
+  --c-grey-700: #4a4a4a;
+  --c-grey-300: #b8b8b8;
+  --c-grey-200: #d4d4d4;
+  --c-grey-100: #e4e4e4;
+  --c-off-white: #f2f2f2;
+
+  /* Reds */
+  --c-red-600: #a3402e;
+  --c-red-300: #e48a77;
+
+  /* Roles: dark theme */
+  --c-bg: var(--c-brown-990);
+  --c-surface: var(--c-brown-950);
+  --c-surface-hover: var(--c-brown-900);
+  --c-border: var(--c-brown-850);
+  --c-text: var(--c-brown-100);
+  --c-text-muted: var(--c-brown-300);
+  --c-link: var(--c-brown-400);
+  --c-accent: var(--c-brown-500);
+  --c-accent-hover: var(--c-brown-400);
+  --c-on-accent: var(--c-brown-950);
+
+  --c-header-bg: var(--c-brown-975);
+  --c-header-text: var(--c-brown-100);
+  --c-header-muted: var(--c-brown-300);
+
+  /* Completion (checkmarks, finished days) uses the light brown */
+  --c-success: var(--c-brown-500);
+  --c-success-strong: var(--c-brown-400);
+  --c-success-light: var(--c-brown-300);
+  --c-success-text: var(--c-brown-300);
+  --c-success-glow: rgb(168 127 69 / 0.4);
+  --c-on-success: var(--c-brown-950);
+
+  --c-danger: var(--c-red-300);
+  --c-overlay: rgb(14 11 7 / 0.9);
+
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  --c-bg: var(--c-brown-50);
+  --c-surface: var(--c-paper);
+  --c-surface-hover: var(--c-brown-100);
+  --c-border: var(--c-brown-200);
+  --c-text: var(--c-brown-800);
+  --c-text-muted: var(--c-brown-600);
+  --c-link: var(--c-brown-700);
+  --c-accent: var(--c-brown-500);
+  --c-accent-hover: var(--c-brown-400);
+  --c-on-accent: var(--c-brown-950);
+
+  --c-header-bg: var(--c-brown-800);
+  --c-header-text: var(--c-brown-50);
+  --c-header-muted: var(--c-brown-300);
+
+  --c-success: var(--c-brown-500);
+  --c-success-strong: var(--c-brown-600);
+  --c-success-light: var(--c-brown-300);
+  --c-success-text: var(--c-brown-700);
+  --c-success-glow: rgb(168 127 69 / 0.35);
+  --c-on-success: var(--c-brown-950);
+
+  --c-danger: var(--c-red-600);
+  --c-overlay: rgb(250 246 238 / 0.9);
+
+  color-scheme: light;
+}
+
+/* Greyscale: off-black page, off-white text */
+:root[data-theme='greyscale'] {
+  --c-bg: var(--c-off-black);
+  --c-surface: var(--c-grey-950);
+  --c-surface-hover: var(--c-grey-900);
+  --c-border: var(--c-grey-850);
+  --c-text: var(--c-off-white);
+  --c-text-muted: var(--c-grey-300);
+  --c-link: var(--c-off-white);
+  --c-accent: var(--c-off-white);
+  --c-accent-hover: var(--c-grey-100);
+  --c-on-accent: var(--c-off-black);
+
+  --c-header-bg: var(--c-off-black);
+  --c-header-text: var(--c-off-white);
+  --c-header-muted: var(--c-grey-300);
+
+  --c-success: var(--c-off-white);
+  --c-success-strong: var(--c-grey-100);
+  --c-success-light: var(--c-grey-300);
+  --c-success-text: var(--c-off-white);
+  --c-success-glow: rgb(242 242 242 / 0.25);
+  --c-on-success: var(--c-off-black);
+
+  --c-danger: var(--c-off-white);
+  --c-overlay: rgb(18 18 18 / 0.9);
+
+  color-scheme: dark;
+}
+
+/* Whitescale: off-white page, off-black text */
+:root[data-theme='whitescale'] {
+  --c-bg: var(--c-off-white);
+  --c-surface: var(--c-off-white);
+  --c-surface-hover: var(--c-grey-100);
+  --c-border: var(--c-grey-200);
+  --c-text: var(--c-off-black);
+  --c-text-muted: var(--c-grey-700);
+  --c-link: var(--c-off-black);
+  --c-accent: var(--c-off-black);
+  --c-accent-hover: var(--c-grey-850);
+  --c-on-accent: var(--c-off-white);
+
+  --c-header-bg: var(--c-off-black);
+  --c-header-text: var(--c-off-white);
+  --c-header-muted: var(--c-grey-300);
+
+  --c-success: var(--c-off-black);
+  --c-success-strong: var(--c-grey-850);
+  --c-success-light: var(--c-grey-700);
+  --c-success-text: var(--c-off-black);
+  --c-success-glow: rgb(18 18 18 / 0.2);
+  --c-on-success: var(--c-off-white);
+
+  --c-danger: var(--c-off-black);
+  --c-overlay: rgb(242 242 242 / 0.9);
+
+  color-scheme: light;
+}
